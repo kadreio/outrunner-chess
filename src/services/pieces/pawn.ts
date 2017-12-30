@@ -1,0 +1,126 @@
+import { getPieceAtPosition, getActivePlayer, getBoardFromHistory } from '../board/index';
+import { connect } from 'react-redux';
+import { getPositionsForPattern, getStandardResult } from './util';
+import { isEqual } from 'lodash';
+import { History } from '../../components/History/index';
+
+export const Pawn: PieceService = {
+  getValidMoves: (board: BoardStoreState, position: BoardPosition, history: Move[]): BoardPosition[] => {
+    const movingPiece = getPieceAtPosition(board, position);
+    let positions = [];
+
+    //"Flip the board" if black to make logic easier;
+    const currentRow = movingPiece.side === "WHITE" ? position.row : 7 - position.row;
+    const distance = currentRow === 1 ? 2 : 1;
+    const direction = movingPiece.side === "WHITE" ? 1 : -1;
+
+    const forwardPattern = {
+      row: direction,
+      col: 0
+    }
+
+    const attackPatterns =[{
+      row: direction,
+      col: 1
+    }, {
+      row: direction,
+      col: -1
+    }]
+
+    positions = positions.concat(getPositionsForPattern(forwardPattern, distance, board, position, movingPiece, false));
+    attackPatterns.forEach((pattern) => {
+      positions =  positions.concat(getPositionsForPattern(pattern, distance, board, position, movingPiece, true, false));
+    });
+
+    let enPassantPos = getEnPassant(position, board, history[history.length -1], getActivePlayer(history));
+    if(enPassantPos) {
+      positions.push(enPassantPos);
+    }
+
+
+    return positions;
+  },
+
+  getMoveResults: (board: BoardStoreState, history: Move[], move: Move) => {
+    const activePlayer = getActivePlayer(history);
+
+    if(move.fromPosition.col !== move.toPosition.col) return getEnPassantActions(move, activePlayer, history)
+    if(move.toPosition.row === 0 || move.toPosition.row === 7) {
+      // Promote piece
+    }
+
+    return getStandardResult(move, {
+      type: 'PAWN',
+      side: getActivePlayer(history)
+    });
+  }
+}
+
+function getEnPassantActions(move: Move, activePlayer, history) {
+  const removeSpot = {
+    col: move.toPosition.col,
+    row: move.toPosition.row === 2 ? 3 : 4
+  }
+
+  return [
+    {
+      type:'REMOVEPIECE',
+      target: removeSpot,
+    },
+    {
+      type:'REMOVEPIECE',
+      target: move.fromPosition,
+    },
+    {
+      type:'ADDPIECE',
+      target: move.toPosition,
+      piece: {
+        type: 'PAWN',
+        side: getActivePlayer(history)
+      }
+    }
+  ]
+}
+
+
+function getEnPassant(position: BoardPosition, board: BoardStoreState, lastMove:Move, side): BoardPosition {
+  if(!Boolean(lastMove)) return;
+
+  const isWhite = side === 'WHITE';
+
+  if(!(isWhite && (position.row === 4) || !isWhite && (position.row === 3))) return;
+
+
+  const targetRow = isWhite ? 4 : 3
+
+  const correctRow = position.row == targetRow;
+
+  const targets = [];
+  const left = position.col + 1;
+  const right = position.col - 1
+
+  if(left + 1 <= 7) targets.push(left);
+  if(right + 1 <= 7) targets.push(right);
+
+  const valid = targets.map((col) => {
+    return {
+      col,
+      row: targetRow
+    }
+  }).filter((targetPosition) => {
+    const targetPiece = board[targetPosition.row][targetPosition.col]
+    const isPawn = targetPiece && targetPiece.type == 'PAWN';
+
+    const movedTwoLastTurn = isEqual(lastMove.fromPosition, {col: targetPosition.col, row: isWhite ? 6 : 1});
+
+    console.log(targetPosition, targetPiece, movedTwoLastTurn);
+
+    return isPawn && movedTwoLastTurn;
+  }).map((position) => {
+    return {
+      col: position.col,
+      row: isWhite ? 5 : 2
+    }
+  })
+  return valid[0];
+}

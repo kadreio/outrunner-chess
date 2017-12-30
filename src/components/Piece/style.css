@@ -1,0 +1,19 @@
+.container {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.black > svg * {
+  fill: transparent !important;
+  stroke: #ff48c4 !important;
+}
+
+
+.white > svg * {
+
+  fill: transparent !important;
+  stroke: #2bd1fc !important;
+}

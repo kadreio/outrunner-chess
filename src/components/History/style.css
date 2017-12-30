@@ -1,0 +1,13 @@
+.normal {
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0px;
+}
+.normal ol, .normal li, .normal h5 {
+  width: 100%;
+  flex: 1;
+  margin: 0;
+  padding: 0px;
+}

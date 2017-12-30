@@ -1,0 +1,19 @@
+.row {
+  width:100%;
+  display: flex;
+}
+
+.normal{
+  transition: box-shadow 0.3s ease-in-out;
+  will-change: box-shadow;
+}
+
+.blackTurn{
+  box-shadow: 0 0 50px 5px #c04df9;;
+
+}
+.whiteTurn{
+  box-shadow: 0 0 50px 5px #2bd1fc;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
