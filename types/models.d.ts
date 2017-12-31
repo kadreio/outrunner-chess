@@ -63,8 +63,8 @@ declare namespace Game {
 
   export type GameInstance = {
     history: History,
-    white: User;
-    black: User;
+    white: User['id'];
+    black: User['id'];
     state: 'PENDING' | 'ACTIVE' | 'COMPLETE';
   }
 

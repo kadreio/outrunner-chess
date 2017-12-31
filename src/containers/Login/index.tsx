@@ -1,65 +1,73 @@
-import * as React from 'react';
-import * as style from './style.css';
-import * as GameActions from '../../actions/board';
-import { bindActionCreators } from 'redux';
-import firebase from 'firebase';
-import * as firebaseui from 'firebaseui';
-import { RootState } from '../../reducers';
-import { createBrowserHistory } from 'history';
+import firebase from '@firebase/app'
+import '@firebase/auth';
 
-import "!style-loader!css-loader!firebaseui/dist/firebaseui.css";
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { bindActionCreators } from 'redux';
+
+import * as GameActions from '../../actions/board';
+import { EmailLogin } from '../../components/Forms/EmailLogin/index';
+import { RootState } from '../../reducers';
+import { loggedIn } from '../../actions/board';
 
 export namespace Chess {
   export interface Props extends RouteComponentProps<void> {
     actions: typeof GameActions;
     user: User;
   }
+  export interface State {
+    loginType: 'EMAIL'|'GOOGLE';
+    new: boolean;
+    email: string;
+    password: string;
+    error?: any;
+  }
 }
-const ui = new firebaseui.auth.AuthUI(firebase.auth());
+
 
 
 @connect(mapStateToProps, mapDispatchToProps)
-export class Login extends React.Component<Chess.Props> {
-  uiConfig: any;
-
+export class Login extends React.Component<Chess.Props, Chess.State> {
   constructor(a,b) {
     super(a,b);
     const actions = this.props.actions;
-
-    this.uiConfig = {
-      signInFlow: 'popup',
-      callbacks: {
-        signInSuccess: (currentUser, credential, redirectUrl) => {
-          actions.loggedIn({
-            id: currentUser.uid,
-            displayName: currentUser.email,
-            loggedIn: true
-          })
-          this.props.history.push('/');
-          return true;
-        },
-      },
-      signInOptions: [
-        // Leave the lines as is for the providers you want to offer your users.
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      ]
+    this.state = {
+      loginType: 'EMAIL',
+      new: false,
+      email:'',
+      password: ''
     };
-
   }
+  handleLogin() {
+    const action = this.state.new ?
+      firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password) :
+      firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
+
+    action.then((user) => {
+      this.props.actions.loggedIn({
+        id: user.uid,
+        displayName: user.email,
+        loggedIn: true
+      });
+      this.props.history.replace('/');
+    })
+    .catch((error) => {
+      this.setState(Object.assign(this.state, {error}));
+      console.error(error);
+      alert(error.message);
+    })
+  }
+
   render() {
     return (
-      <div className={style.normal}>
-        <h1> Sign In </h1>
-        <div id="firebaseui-auth-container"></div>
+      <div>
+        <EmailLogin
+          error={this.state.error}
+          onSubmit={() => this.handleLogin()}
+          onChange={(val) => {console.log(val), this.setState(Object.assign(this.state, val)) }} />
       </div>
     );
-  }
-
-  componentDidMount() {
-    ui.start('#firebaseui-auth-container', this.uiConfig);
   }
 }
 

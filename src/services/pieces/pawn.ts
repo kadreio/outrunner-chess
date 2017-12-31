@@ -1,7 +1,7 @@
 import { getPieceAtPosition, getActivePlayer, getBoardFromHistory } from '../board/index';
 import { connect } from 'react-redux';
 import { getPositionsForPattern, getStandardResult } from './util';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash-es/isEqual';
 import { History } from '../../components/History/index';
 
 export const Pawn: PieceService = {
@@ -92,13 +92,13 @@ function getEnPassant(position: Chess.Position, board: Chess.Board, lastMove: Ga
 
 
   const targetRow = isWhite ? 4 : 3
-
   const correctRow = position.row == targetRow;
 
   const targets = [];
   const left = position.col + 1;
   const right = position.col - 1
 
+  //Check Bounds
   if(left + 1 <= 7) targets.push(left);
   if(right + 1 <= 7) targets.push(right);
 
@@ -110,10 +110,7 @@ function getEnPassant(position: Chess.Position, board: Chess.Board, lastMove: Ga
   }).filter((targetPosition) => {
     const targetPiece = board[targetPosition.row][targetPosition.col]
     const isPawn = targetPiece && targetPiece.type == 'PAWN';
-
     const movedTwoLastTurn = isEqual(lastMove.fromPosition, {col: targetPosition.col, row: isWhite ? 6 : 1});
-
-    console.log(targetPosition, targetPiece, movedTwoLastTurn);
 
     return isPawn && movedTwoLastTurn;
   }).map((position) => {

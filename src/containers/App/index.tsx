@@ -1,28 +1,27 @@
+import firebase from '@firebase/app';
+import '@firebase/auth';
+
 import * as React from 'react';
-import * as style from './style.css';
-import * as GameActions from '../../actions/board';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { bindActionCreators } from 'redux';
+
+import * as GameActions from '../../actions/board';
+import { History } from '../../components/History/index';
 import { RootState } from '../../reducers';
 import { Board } from '../Board/index';
-import { selectSquare } from '../../actions/board';
-import { History } from '../../components/History/index';
-import firebase from 'firebase';
+import * as style from './style.css';
+
 
 export namespace Chess {
   export interface Props extends RouteComponentProps<void> {
     game: GameState;
     actions: typeof GameActions;
   }
-
-  export interface State {
-    /* empty */
-  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export class App extends React.Component<Chess.Props, Chess.State> {
+export class App extends React.Component<Chess.Props> {
 
   constructor(a,b) {
     super(a,b);
@@ -42,10 +41,10 @@ export class App extends React.Component<Chess.Props, Chess.State> {
 
     return (
       <div>
-        <header onClick={() => {
+        <header style={{textAlign: 'right', margin:'8px'}} onClick={() => {
           actions.loggedOut();
           firebase.auth().signOut();
-        }}> Log Out -  {game.user.displayName} </header>
+        }}> <h5> Hello {game.user.displayName} | Log Out </h5> </header>
         <div className={style.normal}>
           <History moves={game.history} />
           <Board

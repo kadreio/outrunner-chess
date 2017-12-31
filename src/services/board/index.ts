@@ -1,5 +1,5 @@
 import { Board } from '../../containers/Board/index';
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash-es/cloneDeep';
 import { getInitialBoard } from '../../reducers/initial-board';
 import { getValidMoves, getResult } from '../pieces/index';
 

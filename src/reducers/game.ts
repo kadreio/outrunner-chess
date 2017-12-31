@@ -1,15 +1,14 @@
+import firebase from '@firebase/app';
+import '@firebase/firestore';
+
 import { handleActions } from 'redux-actions';
+
 import * as Actions from '../constants/actions';
-import { getInitialBoard } from './initial-board';
-import { getActivePlayer, getPieceAtPosition, getBoardFromHistory } from '../services/board';
+import { getActivePlayer, getBoardFromHistory, getPieceAtPosition } from '../services/board';
 import { isValidMove } from '../services/board/index';
 import { getValidMoves } from '../services/pieces/index';
-import firebase from 'firebase';
-import * as firestore from 'firebase/firestore';
-import { loggedIn } from '../actions/board';
 
 
-console.log(firebase, firestore);
 const app = firebase.initializeApp({
   apiKey: "AIzaSyA_YMUlaoojkhCrRpvRWFKbPci7j_ARL1M",
   authDomain: "outrunnerchess.firebaseapp.com",

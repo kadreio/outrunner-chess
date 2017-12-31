@@ -8,7 +8,7 @@ import { RootState } from '../../reducers';
 import { Square } from '../../components/Square/index';
 import { movePiece } from '../../actions/board';
 import { create } from 'domain';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash-es/isEqual';
 
 interface Props {
   game: GameState;
@@ -73,7 +73,7 @@ export class Board extends React.Component<Props> {
 
     const elements = [];
     for(let i=0; i < 8; i++) {
-      elements.push(<div className={style.row}>
+      elements.push(<div key={i} className={style.row}>
         {this.getColumns(i)}
       </div>)
     }

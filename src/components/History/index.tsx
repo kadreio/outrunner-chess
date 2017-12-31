@@ -38,10 +38,9 @@ export class History extends React.Component<HistoryDisplay.Props> {
 
   render() {
     const { moves } = this.props;
-
-    const list = moves.map((move) => {
+    const list = moves.map((move, idx) => {
       return (
-        <ol>
+        <ol key={idx}>
           <div> {getNotationForPosition(move.fromPosition)} -> {getNotationForPosition(move.toPosition)} </div>
         </ol>
       )

@@ -1,0 +1,11 @@
+.normal {
+  width: 300px;
+}
+.normal label{
+  display: flex;
+  flex-direction: column;
+}
+
+.normal label input{
+  margin: 8px 0px 16px 0px;
+}

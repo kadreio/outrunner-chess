@@ -7,8 +7,11 @@ import { configureStore } from './store';
 import { App } from './containers/App';
 import { Login } from './containers/Login';
 
+import firebase from '@firebase/app'
+import '@firebase/auth';
+
 import "./root.css";
-import firebase from 'firebase';
+
 
 const store = configureStore();
 const history = createBrowserHistory();
