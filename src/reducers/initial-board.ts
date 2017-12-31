@@ -80,7 +80,7 @@ export function getInitialBoard() {
   getEmptyRow(),
   getPawnRow('BLACK'),
   getEndRow('BLACK'),
-] as BoardStoreState;
+] as Chess.Board;
 
 }
 

@@ -1,62 +1,78 @@
-declare type PieceType = 'PAWN'|'ROOK'|'BISHOP'|'KNIGHT'|'QUEEN'|'KING';
-declare interface Piece {
-  side: 'BLACK'|'WHITE',
-  type: PieceType
+declare namespace Chess {
+  export type Board = [
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
+    [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null]
+  ]
+  export type Position = {
+    row: number,
+    col: number,
+  }
+  export type Side = 'WHITE' | 'BLACK';
+  export interface Piece {
+    side: 'BLACK'|'WHITE',
+    type: PieceType
+  }
+  export type PieceType = 'PAWN'|'ROOK'|'BISHOP'|'KNIGHT'|'QUEEN'|'KING';
 }
 
-declare type BoardStoreState = [
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null],
-  [Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null, Piece | null]
-]
 
-declare type BoardPosition = {
-  row: number,
-  col: number,
+
+
+
+
+declare type User = {
+  loggedIn: boolean;
+  displayName: string;
+  id: string;
 }
-
-declare enum Sides {
-  White = 'WHITE',
-  Black = 'BLACK',
-}
-
-declare enum Bounds {
-  MaxRow = 7,
-  MaxCol = 7,
-}
-
-declare type Move = {
-  fromPosition: BoardPosition;
-  toPosition: BoardPosition;
-}
-
-declare type Action = {
-  type: 'ADDPIECE'|'REMOVEPIECE',
-  target: BoardPosition,
-  piece?: Piece,
-}
-
-declare type Result = Action[];
 
 declare type UIState = {
-  selectedSquare?: BoardPosition;
-  potentialMoves: BoardPosition[];
+  selectedSquare?: Chess.Position;
+  potentialMoves: Chess.Position[];
 }
 
 declare type GameState = {
-  board: BoardStoreState;
-  currentPlayer: Sides.White | Sides.Black;
-  history: Move[];
-  ui: UIState
+  board: Chess.Board;
+  currentPlayer: Chess.Side;
+  history: Game.History;
+  ui: UIState;
+  user: User
 };
 
 declare interface PieceService {
-  getValidMoves(board: BoardStoreState, position: BoardPosition, history?: Move[]): BoardPosition[],
-  getMoveResults?(board: BoardStoreState, history, move)
+  getValidMoves(board: Chess.Board, position: Chess.Position, history?: Game.History): Chess.Position[],
+  getMoveResults?(board: Chess.Board, history, move)
+}
+
+declare namespace Game {
+
+  export type Move = {
+    fromPosition: Chess.Position;
+    toPosition: Chess.Position;
+    promotion?: Chess.Piece
+  }
+
+  export type History = Move[];
+
+  export type GameInstance = {
+    history: History,
+    white: User;
+    black: User;
+    state: 'PENDING' | 'ACTIVE' | 'COMPLETE';
+  }
+
+  export type Action = {
+    type: 'ADDPIECE'|'REMOVEPIECE',
+    target: Chess.Position,
+    piece?: Chess.Piece,
+  }
+
+  export type Result = Action[];
 }

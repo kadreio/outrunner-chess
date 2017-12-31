@@ -10,24 +10,23 @@ import { movePiece } from '../../actions/board';
 import { create } from 'domain';
 import { isEqual } from 'lodash';
 
-export namespace Chess {
-  export interface Props {
-    game: GameState;
-    actions: typeof GameActions;
-    selectedSquare?: BoardPosition;
-  }
+interface Props {
+  game: GameState;
+  actions: typeof GameActions;
+  selectedSquare?: Chess.Position;
 }
 
-export class Board extends React.Component<Chess.Props> {
+
+export class Board extends React.Component<Props> {
   actions: typeof GameActions;
   constructor(a,b) {
     super(a,b);
     this.actions = this.props.actions;
   }
 
-  onSelect(position: BoardPosition, piece) {
+  onSelect(position: Chess.Position, piece) {
     if(this.props.selectedSquare) {
-      const move: Move = {
+      const move: Game.Move = {
         toPosition: position,
         fromPosition: this.props.selectedSquare,
       }

@@ -8,6 +8,7 @@ import { RootState } from '../../reducers';
 import { Board } from '../Board/index';
 import { selectSquare } from '../../actions/board';
 import { History } from '../../components/History/index';
+import firebase from 'firebase';
 
 export namespace Chess {
   export interface Props extends RouteComponentProps<void> {
@@ -21,19 +22,38 @@ export namespace Chess {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export class Chess extends React.Component<Chess.Props, Chess.State> {
+export class App extends React.Component<Chess.Props, Chess.State> {
+
+  constructor(a,b) {
+    super(a,b);
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.props.actions.loggedIn({
+          id: user.uid,
+          displayName: user.email,
+          loggedIn: true
+        });
+      }
+    });
+  }
 
   render() {
     const { game, children, actions } = this.props;
 
     return (
-      <div className={style.normal}>
-        <History moves={game.history} />
-        <Board
-          game={game}
-          selectedSquare={game.ui.selectedSquare}
-          actions={actions} />
-        <div style={{'minWidth':'100px'}}> </div>
+      <div>
+        <header onClick={() => {
+          actions.loggedOut();
+          firebase.auth().signOut();
+        }}> Log Out -  {game.user.displayName} </header>
+        <div className={style.normal}>
+          <History moves={game.history} />
+          <Board
+            game={game}
+            selectedSquare={game.ui.selectedSquare}
+            actions={actions} />
+          <div style={{'minWidth':'100px'}}> </div>
+        </div>
       </div>
     );
   }

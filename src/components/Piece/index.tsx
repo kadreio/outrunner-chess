@@ -15,7 +15,7 @@ const SCALE = 1.3;
 
 export namespace ChessPiece {
   export interface Props {
-    config: Piece;
+    config: Chess.Piece;
   }
 }
 

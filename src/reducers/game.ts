@@ -6,6 +6,7 @@ import { isValidMove } from '../services/board/index';
 import { getValidMoves } from '../services/pieces/index';
 import firebase from 'firebase';
 import * as firestore from 'firebase/firestore';
+import { loggedIn } from '../actions/board';
 
 
 console.log(firebase, firestore);
@@ -20,16 +21,21 @@ const app = firebase.initializeApp({
 const db = firebase.firestore();
 
 
-const testHistory = [{"toPosition":{"col":3,"row":3},"fromPosition":{"col":3,"row":1}},{"toPosition":{"col":4,"row":4},"fromPosition":{"col":4,"row":6}},{"toPosition":{"col":3,"row":4},"fromPosition":{"col":3,"row":3}},{"toPosition":{"col":2,"row":4},"fromPosition":{"col":2,"row":6}}];
-const initialState = {
+const testHistory: Game.History = [{"toPosition":{"col":3,"row":3},"fromPosition":{"col":3,"row":1}},{"toPosition":{"col":4,"row":4},"fromPosition":{"col":4,"row":6}},{"toPosition":{"col":3,"row":4},"fromPosition":{"col":3,"row":3}},{"toPosition":{"col":2,"row":4},"fromPosition":{"col":2,"row":6}}];
+const initialState: GameState = {
   board: getBoardFromHistory(testHistory),
-  currentPlayer: getActivePlayer(testHistory),
+  currentPlayer: getActivePlayer(testHistory) as Chess.Side,
   history: testHistory,
   ui: {
     selectedSquare: null,
     potentialMoves: [],
+  },
+  user: {
+    loggedIn: false,
+    displayName: '',
+    id: '',
   }
-} as GameState;
+};
 
 export default handleActions({
   [Actions.MOVE_PIECE]: (state, action: any) => {
@@ -51,7 +57,7 @@ export default handleActions({
     return state;
   },
   [Actions.SELECT_PIECE]: (state, action: any) => {
-    const target: BoardPosition = action.payload;
+    const target: Chess.Position = action.payload;
 
     if(target) {
       const currentPlayer = state.currentPlayer;
@@ -73,5 +79,8 @@ export default handleActions({
       }
     }
     return Object.assign({}, state, {ui:{selectedSquare: action.payload, potentialMoves: []}})
+  },
+  [Actions.LOGGED_IN]: (state, action: any) => {
+    return Object.assign({}, state, {user: action.payload});
   }
 }, initialState);

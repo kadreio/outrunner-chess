@@ -7,7 +7,7 @@ import { Knight } from './knight';
 import { getStandardResult } from './util';
 
 
-export function getValidMoves(piece:Piece, board: BoardStoreState, origin: BoardPosition, history: Move[]) {
+export function getValidMoves(piece:Chess.Piece, board: Chess.Board, origin: Chess.Position, history: Game.History) {
   let validMoves = [];
   switch(piece.type) {
     case 'PAWN':
@@ -34,8 +34,8 @@ export function getValidMoves(piece:Piece, board: BoardStoreState, origin: Board
   return validMoves;
 }
 
-export function getResult(board: BoardStoreState, piece: Piece, history: Move[], move: Move): Result {
-  let result: Result  = [];
+export function getResult(board: Chess.Board, piece: Chess.Piece, history: Game.History, move:Game.Move): Game.Result {
+  let result: Game.Result  = [];
   switch(piece.type) {
     case 'PAWN':
       result = Pawn.getMoveResults(board, history, move)

@@ -1,5 +1,7 @@
 import { createAction } from 'redux-actions';
 import * as Actions from '../constants/actions';
-export const selectSquare = createAction<BoardPosition | undefined>(Actions.SELECT_PIECE);
-export const movePiece = createAction<Move>(Actions.MOVE_PIECE);
-export const gameUpdate = createAction<Move[]>(Actions.GAME_UPDATE);
+export const selectSquare = createAction<Chess.Position | undefined>(Actions.SELECT_PIECE);
+export const movePiece = createAction<Game.Move>(Actions.MOVE_PIECE);
+
+export const loggedIn = createAction<User>(Actions.LOGGED_IN);
+export const loggedOut = createAction(Actions.LOGGED_OUT);

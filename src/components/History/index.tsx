@@ -6,11 +6,11 @@ import { ChessPiece } from '../Piece';
 
 export namespace HistoryDisplay {
   export interface Props {
-    moves: Move[];
+    moves: Game.History;
   }
 }
 
-const getNotationForPosition = (position: BoardPosition) => {
+const getNotationForPosition = (position: Chess.Position) => {
   const {row, col} = position;
 
   const displayNumber = 8 - row;

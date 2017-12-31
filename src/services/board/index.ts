@@ -6,16 +6,16 @@ import { getValidMoves, getResult } from '../pieces/index';
 
 const EMPTY = null;
 
-const applyMove = (board: BoardStoreState, move: Move, moveNumber, history) => {
+const applyMove = (board: Chess.Board, move:Game.Move, moveNumber, history) => {
   const mover = getPieceAtPosition(board, move.fromPosition);
 
-  const result:Result = getResult(board, mover, history.slice(0, moveNumber), move);
+  const result:Game.Result = getResult(board, mover, history.slice(0, moveNumber), move);
 
   return result.reduce(applyAction, board);
 
 }
 
-export const applyAction = (board: BoardStoreState, action: Action): BoardStoreState => {
+export const applyAction = (board: Chess.Board, action: Game.Action): Chess.Board => {
   switch(action.type) {
     case 'ADDPIECE':
       setPieceAtPosition(board, action.target, action.piece);
@@ -27,16 +27,16 @@ export const applyAction = (board: BoardStoreState, action: Action): BoardStoreS
   return board;
 }
 
-export const getPieceAtPosition = (board: BoardStoreState, position: BoardPosition) => {
+export const getPieceAtPosition = (board: Chess.Board, position: Chess.Position) => {
   return board[position.row][position.col];
 }
 
-export const setPieceAtPosition = (board: BoardStoreState, position: BoardPosition, piece) => {
+export const setPieceAtPosition = (board: Chess.Board, position: Chess.Position, piece) => {
   board[position.row][position.col] = piece;
 }
 
 
-export const isValidMove = (board: BoardStoreState, history: Move[], move: Move) =>{
+export const isValidMove = (board: Chess.Board, history: Game.History, move:Game.Move) =>{
   const activePlayer = getActivePlayer(history);
   const movingPiece = getPieceAtPosition(board, move.fromPosition);
 
@@ -45,18 +45,18 @@ export const isValidMove = (board: BoardStoreState, history: Move[], move: Move)
   pieceCanMove(movingPiece, move, board, history);
 }
 
-export const getActivePlayer = (history: Move[]) => {
+export const getActivePlayer = (history: Game.History) => {
   return  history.length % 2 ? 'BLACK' : 'WHITE';
 }
 
-const pieceCanMove = (piece: Piece, move: Move, board, history) => {
+const pieceCanMove = (piece: Chess.Piece, move:Game.Move, board, history) => {
   return getValidMoves(piece, board, move.fromPosition, history).reduce((prev, pos) => {
       return prev || (pos.row === move.toPosition.row &&
       pos.col === move.toPosition.col)
     }, false);;
 }
 
-export const getBoardFromHistory = (history: Move[]): BoardStoreState => {
+export const getBoardFromHistory = (history: Game.History): Chess.Board => {
   let board = cloneDeep(getInitialBoard());
   const computedBoard = history.reduce(applyMove, board);
   return  computedBoard;

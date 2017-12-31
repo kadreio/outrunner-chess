@@ -4,16 +4,15 @@ import * as style from './style.css';
 import { applyMiddleware } from 'redux';
 import { ChessPiece } from '../Piece';
 
-export namespace Square {
-  export interface Props {
-    position: BoardPosition;
-    piece: Piece | null;
-    potential: boolean;
-    selected: boolean;
-    currentPlayer: 'WHITE'|'BLACK';
-    onSelect(event:any):void;
-  }
+ interface Props {
+  position: Chess.Position;
+  piece: Chess.Piece | null;
+  potential: boolean;
+  selected: boolean;
+  currentPlayer: 'WHITE'|'BLACK';
+  onSelect(event:any):void;
 }
+
 
 function isOdd(val: number): Boolean  {
   return Math.floor(val / 2) * 2 === val;
@@ -25,7 +24,7 @@ function isBlack(row, col) {
   return (rowOdd && colOdd) || (!rowOdd && !colOdd);
 };
 
-export class Square extends React.Component<Square.Props> {
+export class Square extends React.Component<Props> {
 
   render() {
     const { position, potential, piece, selected, onSelect } = this.props;

@@ -4,10 +4,18 @@ type PatternDelta = {
   row: number,
   col: number
 }
-export function getPositionsForPattern(delta: PatternDelta, distance: number, board: BoardStoreState, position: BoardPosition, piece: Piece, attack = true, travel = true): number[] {
+export function getPositionsForPattern(
+    delta: PatternDelta,
+    distance: number,
+    board: Chess.Board,
+    position: Chess.Position,
+    piece: Chess.Piece,
+    attack = true,
+    travel = true): number[] {
+
   const positions = [];
 
-  let nextPosition: BoardPosition = {
+  let nextPosition: Chess.Position = {
     row: delta.row + position.row,
     col: delta.col + position.col
   }
@@ -15,7 +23,7 @@ export function getPositionsForPattern(delta: PatternDelta, distance: number, bo
     distance--;
     if(nextPosition.row > 7 || nextPosition.col > 7 || nextPosition.row  < 0 || nextPosition.col  < 0) break;
 
-    const targetPiece: Piece = getPieceAtPosition(board, nextPosition);
+    const targetPiece: Chess.Piece = getPieceAtPosition(board, nextPosition);
     if(targetPiece) {
       if(targetPiece.side === piece.side) break;
       if(attack) positions.push(nextPosition);
@@ -36,7 +44,7 @@ export function getPositionsForPattern(delta: PatternDelta, distance: number, bo
 
 }
 
-export function getStandardResult(move, piece):Result {
+export function getStandardResult(move, piece):Game.Result {
   return [
     {
       type:'REMOVEPIECE',

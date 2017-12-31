@@ -4,19 +4,27 @@ import { Provider } from 'react-redux';
 import { Router, Route, Switch } from 'react-router';
 import { createBrowserHistory } from 'history';
 import { configureStore } from './store';
-import { Chess } from './containers/App';
+import { App } from './containers/App';
+import { Login } from './containers/Login';
+
+import "./root.css";
+import firebase from 'firebase';
 
 const store = configureStore();
 const history = createBrowserHistory();
 
-
-
+firebase.auth().onAuthStateChanged((user) => {
+  if (!user) {
+    history.push('/login');
+  }
+});
 
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
       <Switch>
-        <Route path="/" component={Chess} />
+        <Route exact path="/" component={App} />
+        <Route path="/login" component={Login} />
       </Switch>
     </Router>
   </Provider>,

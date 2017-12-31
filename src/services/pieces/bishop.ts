@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getPositionsForPattern, diagonalPatterns } from './util';
 
 export const Bishop: PieceService = {
-  getValidMoves: (board: BoardStoreState, position: BoardPosition): BoardPosition[] => {
+  getValidMoves: (board: Chess.Board, position: Chess.Position): Chess.Position[] => {
     const movingPiece = getPieceAtPosition(board, position);
     let positions = [];
     diagonalPatterns.forEach((pattern) => {

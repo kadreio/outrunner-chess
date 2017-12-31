@@ -5,7 +5,7 @@ import { isEqual } from 'lodash';
 import { History } from '../../components/History/index';
 
 export const Pawn: PieceService = {
-  getValidMoves: (board: BoardStoreState, position: BoardPosition, history: Move[]): BoardPosition[] => {
+  getValidMoves: (board: Chess.Board, position: Chess.Position, history: Game.History): Chess.Position[] => {
     const movingPiece = getPieceAtPosition(board, position);
     let positions = [];
 
@@ -41,7 +41,7 @@ export const Pawn: PieceService = {
     return positions;
   },
 
-  getMoveResults: (board: BoardStoreState, history: Move[], move: Move) => {
+  getMoveResults: (board: Chess.Board, history: Game.History, move:Game.Move) => {
     const activePlayer = getActivePlayer(history);
 
     if(move.fromPosition.col !== move.toPosition.col) return getEnPassantActions(move, activePlayer, history)
@@ -56,7 +56,7 @@ export const Pawn: PieceService = {
   }
 }
 
-function getEnPassantActions(move: Move, activePlayer, history) {
+function getEnPassantActions(move:Game.Move, activePlayer, history) {
   const removeSpot = {
     col: move.toPosition.col,
     row: move.toPosition.row === 2 ? 3 : 4
@@ -83,7 +83,7 @@ function getEnPassantActions(move: Move, activePlayer, history) {
 }
 
 
-function getEnPassant(position: BoardPosition, board: BoardStoreState, lastMove:Move, side): BoardPosition {
+function getEnPassant(position: Chess.Position, board: Chess.Board, lastMove: Game.Move, side): Chess.Position {
   if(!Boolean(lastMove)) return;
 
   const isWhite = side === 'WHITE';
